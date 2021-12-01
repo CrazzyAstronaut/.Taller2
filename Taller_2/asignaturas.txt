@@ -1,0 +1,10 @@
+1286,belga,4,opcional,14
+1284,algebra,5,opcional,12
+1085,calculo,3,opcional,10
+9450,Disenio,2,opcional,8
+1285,termodinamica,8,obligatoria,2,3,1284,1085,9450
+1458,programacion,6,opcional,9
+1523,calculo2,4,opcional,6
+1211,dinamica,4,opcional,4
+1428,ingles,2,opcional,6
+1285,fisica,5,opcional,6

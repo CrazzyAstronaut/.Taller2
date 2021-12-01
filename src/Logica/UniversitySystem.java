@@ -15,9 +15,9 @@ public interface UniversitySystem {
 
 	public boolean ingresarEstudiante(String rut, String correo, int nivel, String contraseña);
 
-	public boolean ingresarAsignaturaCursada(String correo, int codigoAsignatura, double nota);
+	public boolean ingresarAsignaturaCursada(String rut, String codigoAsignatura, double nota);
 
-	public boolean inscribirAsignatura(String correo, String codigo, int paralelo);
+	public boolean inscribirAsignatura(String rut, String codigo, int paralelo);
 
 	public boolean guardarEstudiantes(FileWriter file);
 

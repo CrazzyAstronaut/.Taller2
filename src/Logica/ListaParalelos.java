@@ -47,4 +47,13 @@ public class ListaParalelos {
 	public Paralelo getParalelo(int index) {
 		return lista[index];
 	}
+
+	public Paralelo getParaleloNumero(int numero) {
+		for (int i = 0; i < cant; i++) {
+			if (lista[i].getNumero()==numero) {
+				return lista[i];
+			}
+		}
+		return null;
+	}
 }
