@@ -37,7 +37,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 			ob.setNombre(nombre);
 			ob.setCreditos(credito);
 			ob.setNivelRequerido(nivel);
-			return listaAsignaturas.agregar(ob);
+			return true;
 		}
 		Obligatoria ob = new Obligatoria(nombre, codigo, credito, nivel);
 		return listaAsignaturas.agregar(ob);
@@ -73,6 +73,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 					if (prof.getParalelosAsignados().getCant() < 5) {
 						prof.getParalelosAsignados().agregar(para);
 						para.setProfesor(prof);
+						para.setAsignatura(asig);
 						asig.getParalelos().agregar(para);
 						return true;
 					}

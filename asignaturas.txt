@@ -1,6 +1,6 @@
-1111,ramo_a,10,obligatorio,0,0
-1112,ramo_b,20,obligatorio,1,1,1111
-3333,ramo_x,40,obligatorio,2,2,1112,2222
+1111,ramo_a,10,obligatoria,0,0
+1112,ramo_b,20,obligatoria,1,1,1111
+3333,ramo_x,40,obligatoria,2,2,1112,2222
 2222,ramo_c,10,obligatoria,1,0
 4444,taller_a,4,opcional,18
 5555,taller_b,8,opcional,10
