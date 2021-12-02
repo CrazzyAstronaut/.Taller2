@@ -47,4 +47,21 @@ public class ListaEstudiantes {
 	public Estudiante getEstudiante(int index) {
 		return lista[index];
 	}
+
+	public int index(Estudiante est) {
+		for(int i = 0; i < cant;i++) {
+			if(lista[i].equals(est)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public boolean eliminar(Estudiante est) {
+		int indice = index(est);
+		if(indice==-1) {return false;}
+		for(int i=indice;i<cant-1;i++) {
+			lista[i]=lista[i+1];
+		}
+		return true;
+	}
 }

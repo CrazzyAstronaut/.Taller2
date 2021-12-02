@@ -2,7 +2,9 @@ package Logica;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.Scanner;
 
 public class App {
@@ -19,8 +21,60 @@ public class App {
 			String correo =s.nextLine();
 			System.out.println("Ingrese su contraseña: ");
 			String contraseña =s.nextLine();
-			//tipo cuenta = sistema.log
-			//
+			int tipoCuenta=sistema.iniciarSesion(correo, contraseña);
+			while(tipoCuenta==-1) {
+				System.out.println("No se pudo iniciar sesión, porfavor intentelo denuevo");
+				System.out.println("Ingrese su correo: ");
+				correo =s.nextLine();
+				System.out.println("Ingrese su contraseña: ");
+				contraseña =s.nextLine();
+				tipoCuenta=sistema.iniciarSesion(correo, contraseña);
+			}
+			int menuSemestre = ingresarFecha();
+			if(menuSemestre==0) {
+				if(tipoCuenta==0) {
+					alumnoInicioSemestre(sistema,correo);
+				}
+				if(tipoCuenta==1) {
+					profesorInicioSemestre(sistema);
+				}
+				if(tipoCuenta ==2) {
+					System.out.println("No hay Opciones Disponibles");
+				}
+				System.out.println("Guardando...");
+				//guardarEstudiantes(sistema);
+			}
+			if(menuSemestre==1) {
+				if(tipoCuenta==0) {
+					alumnoMitadSemestre(sistema);
+				}
+				else {
+					System.out.println("No hay Opciones Disponibles");
+				}
+				System.out.println("Guardando...");
+				//guardarEstudiantes(sistema);
+			}
+			if(menuSemestre==2) {
+				if(tipoCuenta==1) {
+					profesorFinalSemestre(sistema);
+				}
+				else {
+					System.out.println("No hay Opciones Disponibles");
+				}
+				System.out.println("Guardando...");
+				//guardarEstudiantes(sistema);
+			}
+			if(menuSemestre==3) {
+				if(tipoCuenta==2) {
+					adminCierreSemestre(sistema,cerrar);
+				}
+				else {
+					System.out.println("No hay Opciones Disponibles");
+				}
+			}
+			if(menuSemestre==4) {
+				System.out.println("Disfrute sus vacaciones");
+			}
 		}
 		/*boolean cerrar
 		 *while
@@ -37,6 +91,37 @@ public class App {
 		 * 		^ Cierre semestre (Admin generar archivo de egresados)
 		 * 
 		 */
+	}
+
+	private static void guardarEstudiantes(UniversitySystem sistema) throws IOException {
+		FileWriter file1 = new FileWriter("estudiantes.txt");
+		sistema.guardarEstudiantes(file1);
+	}
+
+	private static void adminCierreSemestre(UniversitySystem sistema, boolean cerrar) {
+		System.out.println("Bienvenido administrador");
+		
+	}
+
+	private static void profesorFinalSemestre(UniversitySystem sistema) {
+		System.out.println("Bienvenido al final de semestre profesor");
+		
+	}
+
+	private static void alumnoMitadSemestre(UniversitySystem sistema) {
+		System.out.println("Bienvenido a la midad de semestre alumno");
+		
+	}
+
+	private static void profesorInicioSemestre(UniversitySystem sistema) {
+		System.out.println("Bienvenido al comienzo de semestre profesor");
+		
+	}
+
+	private static void alumnoInicioSemestre(UniversitySystem sistema,String correo) {
+		System.out.println("Bienvenido al comienzo de semestre alumno");
+		sistema.desplegarAsignaturasInscribir(correo);
+		sistema.desplegarAsignaturasInscritas(correo);
 	}
 
 	private static void Lectura(UniversitySystem sistema) throws FileNotFoundException {
@@ -126,6 +211,89 @@ public class App {
 			}
 
 		}
+	}
+
+	public static int ingresarFecha() {
+		s = new Scanner(System.in);
+		System.out.println("dia: ");
+		String dia = s.nextLine();
+		System.out.println("mes: ");
+		String mes = s.nextLine();
+		while (diaCorrecto((dia), (mes)) == false) {
+			System.out.println("dia: ");
+			dia = s.nextLine();
+			System.out.println("mes: ");
+			mes = s.nextLine();
+		}
+		int m = Integer.parseInt(mes);
+		int d = Integer.parseInt(dia);
+		Date fI = new Date(121, m - 1, d);
+		Date fi1 = new Date(121, 2, 8);
+		Date ff1 = new Date(121, 4, 2);
+		Date fi2 = new Date(121, 4, 3);
+		Date ff2 = new Date(121, 6, 11);
+		Date fi3 = new Date(121, 6, 12);
+		Date ff3 = new Date(121, 6, 25);
+		Date f4 = new Date(121, 6, 26);
+		System.out.println(fI);
+		if ((fI.after(fi1) && fI.before(ff1)) || fI.equals(fi1) || fI.equals(ff1)) {
+			System.out.println("Inicio Semestre");
+			return 0;
+		}
+		if ((fI.after(fi2) && fI.before(ff2)) || fI.equals(fi2) || fI.equals(ff2)) {
+			System.out.println("Mitad Semestre");
+			return 1;
+		}
+		if ((fI.after(fi3) && fI.before(ff3)) || fI.equals(fi3) || fI.equals(ff3)) {
+			System.out.println("Final Semestre");
+			return 2;
+		}
+		if (fI.equals(f4)) {
+			System.out.println("Cierre Semestre");
+			return 3;
+		} 
+		else {
+			System.out.println("No hay menú");
+			return 4;
+		}
+	}
+
+	public static boolean diaCorrecto(String d, String m) {
+		if (correctNumber(d) == false|| correctNumber(m) == false) {
+			return false;
+		}
+		int dia = Integer.parseInt(d);
+		int mes = Integer.parseInt(m);
+		if (mes == 2) {
+			if (dia < 29 && dia > 0) {
+				return true;
+			}
+		}
+		if (mes == 4 || mes == 6 || mes == 9 || mes == 11) {
+			if (dia < 31 && dia > 0) {
+				return true;
+			}
+		}
+		if (mes == 1 || mes == 3 || mes == 5 || mes == 7 || mes == 8 || mes == 10 || mes == 12) {
+			if (dia < 32 && dia > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean correctNumber(String numero) {
+		String partes[] = numero.split("");
+		for (int i = 0; i < partes.length; i++) {
+			if (partes[i].equals("0") == false && partes[i].equals("1") == false && partes[i].equals("2") == false
+					&& partes[i].equals("3") == false && partes[i].equals("4") == false
+					&& partes[i].equals("5") == false && partes[i].equals("6") == false
+					&& partes[i].equals("7") == false && partes[i].equals("8") == false
+					&& partes[i].equals("9") == false) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

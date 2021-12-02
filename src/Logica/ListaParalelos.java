@@ -56,4 +56,29 @@ public class ListaParalelos {
 		}
 		return null;
 	}
+
+	public boolean eliminar(int indice) {
+		if(indice==-1) {return false;}
+		for(int i=indice;i<cant-1;i++) {
+			lista[i]=lista[i+1];
+		}
+		return true;
+	}
+
+	public int index(Paralelo p) {
+		for(int i = 0; i < cant;i++) {
+			if(lista[i].equals(p)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public boolean eliminar(Paralelo p) {
+		int indice = index(p);
+		if(indice==-1) {return false;}
+		for(int i=indice;i<cant-1;i++) {
+			lista[i]=lista[i+1];
+		}
+		return true;
+	}
 }

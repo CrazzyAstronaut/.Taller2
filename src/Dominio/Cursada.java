@@ -8,13 +8,13 @@ public class Cursada {
 	public Cursada(Asignatura asignatura, double nota) {
 		super();
 		this.asignatura = asignatura;
-		this.nota = nota;
 		if(nota>=3.95) {
 			this.aprobada = true;
 		}
 		else {
 			this.aprobada = false;
 		}
+		this.nota = Math.round(nota*10.0)/10.0;
 	}
 
 	public Asignatura getAsignatura() {

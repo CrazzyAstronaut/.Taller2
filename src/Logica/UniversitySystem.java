@@ -21,7 +21,7 @@ public interface UniversitySystem {
 
 	public boolean guardarEstudiantes(FileWriter file);
 
-	public boolean iniciarSesion(String correo, String contraseña);
+	public int iniciarSesion(String correo, String contraseña);
 
 	public void ingresarFecha(String fecha);
 
@@ -35,7 +35,7 @@ public interface UniversitySystem {
 
 	public void desplegarParalelosProfesor(String correo);
 
-	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, String codigo);
+	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, String codigo, int paralelo);
 
 	public boolean guardarEstudiantesEgresados(FileWriter file);
 }

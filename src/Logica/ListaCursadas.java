@@ -1,5 +1,6 @@
 package Logica;
 
+import Dominio.Asignatura;
 import Dominio.Cursada;
 
 public class ListaCursadas {
@@ -46,5 +47,13 @@ public class ListaCursadas {
 	}
 	public Cursada getCursada(int index) {
 		return lista[index];
+	}
+	public Cursada getCursada(Asignatura asig) {
+		for(int i = 0;i<cant;i++) {
+			if(lista[i].getAsignatura().equals(asig)) {
+				return lista[i];
+			}
+		}
+		return null;
 	}
 }

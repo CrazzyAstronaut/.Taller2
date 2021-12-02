@@ -16,10 +16,8 @@ public class UniversitySystemImpl implements UniversitySystem {
 	private ListaCuentas listaCuentas;
 	private ListaAsignaturas listaAsignaturas;
 
-
-	
 	public UniversitySystemImpl() {
-		
+
 		this.listaCuentas = new ListaCuentas(9999);
 		this.listaAsignaturas = new ListaAsignaturas(9999);
 	}
@@ -141,9 +139,21 @@ public class UniversitySystemImpl implements UniversitySystem {
 	}
 
 	@Override
-	public boolean iniciarSesion(String correo, String contraseña) {
-		// TODO Auto-generated method stub
-		return false;
+	public int iniciarSesion(String correo, String contraseña) {
+		if (correo.equals("Admin") && contraseña.equals("GHI_789")) {
+			return 2;
+		}
+		Cuenta cuenta = listaCuentas.getCuenta(correo, contraseña);
+		if (cuenta == null) {
+			return -1;
+		}
+		if (cuenta instanceof Estudiante) {
+			return 0;
+		}
+		if (cuenta instanceof Profesor) {
+			return 1;
+		}
+		return -1;
 	}
 
 	@Override
@@ -154,38 +164,104 @@ public class UniversitySystemImpl implements UniversitySystem {
 
 	@Override
 	public void desplegarAsignaturasInscribir(String correo) {
-		// TODO Auto-generated method stub
-
+		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
+		System.out.println("Creditos: "+est.getCreditos()+"/40");
+		System.out.println(" - Lista de asiganturas obligatorias nuevas: ");
+		for(int i = 0;i<listaAsignaturas.getCant();i++) {
+			Asignatura asig = listaAsignaturas.getAsignatura(i);
+			if(asig instanceof Obligatoria) {
+				Obligatoria asigOb = (Obligatoria) asig;
+				if(est.getNivel()>=asigOb.getNivelRequerido()) {
+					if(est.getAsignaturasCursadas().getCursada(asig)==null) {
+						System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
+					}
+				}
+			}
+		}
+		System.out.println(" - Lista de asiganturas opcionales nuevas: ");
+		for(int i = 0;i<listaAsignaturas.getCant();i++) {
+			Asignatura asig = listaAsignaturas.getAsignatura(i);
+			if(asig instanceof Opcional) {
+				if(est.getAsignaturasCursadas().getCursada(asig)==null) {
+					System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
+				}
+			}
+		}
+		System.out.println(" - Lista de asiganturas repetidas: ");
+		for(int i =0;i<est.getAsignaturasCursadas().getCant();i++) {
+			if(est.getAsignaturasCursadas().getCursada(i).isAprobada()==false) {
+				Asignatura asig = est.getAsignaturasCursadas().getCursada(i).getAsignatura();
+				System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
+			}
+		}
 	}
 
 	@Override
 	public void desplegarParalelosAsignatura(String codigo) {
-		// TODO Auto-generated method stub
-
+		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
+		for (int i = 0; i < asig.getParalelos().getCant(); i++) {
+			System.out.println("Paralelo " + asig.getParalelos().getParalelo(i).getNumero() + " Profesor: "
+					+ asig.getParalelos().getParalelo(i).getProfesor().getCorreo() + " Capacidad: "
+					+ asig.getParalelos().getParalelo(i).getEstudiantes().getCant() + "/100");
+		}
 	}
 
 	@Override
 	public void desplegarAsignaturasInscritas(String correo) {
-		// TODO Auto-generated method stub
-
+		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
+		for (int i = 0; i < est.getAsignaturasActivas().getCant(); i++) {
+			System.out.println(est.getAsignaturasActivas().getParalelo(i).toString());
+		}
 	}
 
 	@Override
 	public boolean eliminarAsignatura(String correo, String codigo) {
-		// TODO Auto-generated method stub
+		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
+		for (int i = 0; i < est.getAsignaturasActivas().getCant(); i++) {
+			if (est.getAsignaturasActivas().getParalelo(i).getAsignatura().getCodigo().equals(codigo)) {
+				est.setCreditos(
+						est.getCreditos() - est.getAsignaturasActivas().getParalelo(i).getAsignatura().getCreditos());
+				est.getAsignaturasActivas().getParalelo(i).getEstudiantes().eliminar(est);
+				est.getAsignaturasActivas().eliminar(i);
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public void desplegarParalelosProfesor(String correo) {
-		// TODO Auto-generated method stub
-
+		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correo);
+		for (int i = 0; i < prof.getParalelosAsignados().getCant(); i++) {
+			System.out.println(prof.getParalelosAsignados().getParalelo(i).getAsignatura().getNombre() + " Paralelo: "
+					+ prof.getParalelosAsignados().getParalelo(i).getNumero());
+		}
 	}
 
 	@Override
-	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, String codigo) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, String codigo, int paralelo) {
+		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correoPro);
+		Estudiante est = (Estudiante) listaCuentas.getCuentaRut(rutEst);
+		if (est == null) {
+			return false;
+		}
+		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
+		if (asig == null) {
+			return false;
+		}
+		Paralelo para = asig.getParalelos().getParaleloNumero(paralelo);
+		if (para == null) {
+			return false;
+		}
+		if (para.getProfesor().equals(prof) == false) {
+			return false;
+		}
+		if (para.getEstudiantes().index(est) == -1) {
+			return false;
+		}
+		Cursada cursada = new Cursada(asig, nota);
+		est.getAsignaturasCursadas().agregar(cursada);
+		est.getAsignaturasActivas().eliminar(para);
+		return true;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package Logica;
 
 import Dominio.Cuenta;
+import Dominio.Estudiante;
 
 public class ListaCuentas {
 	private int cant;
@@ -50,6 +51,23 @@ public class ListaCuentas {
 	public Cuenta getCuentaRut(String Rut) {
 		for(int i = 0; i < cant ; i++) {
 			if(lista[i].getRut().equals(Rut)) {
+				return lista[i];
+			}
+		}
+		return null;
+	}
+	public Cuenta getCuenta(String correo, String contraseña) {
+		for(int i = 0; i < cant ; i++) {
+			if(lista[i].getCorreo().equals(correo)&&lista[i].getContraseña().equals(contraseña)) {
+				return lista[i];
+			}
+		}
+		return null;
+	}
+
+	public Cuenta getCuentaCorreo(String correo) {
+		for(int i = 0; i < cant ; i++) {
+			if(lista[i].getCorreo().equals(correo)) {
 				return lista[i];
 			}
 		}
