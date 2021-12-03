@@ -61,7 +61,9 @@ public class ListaEstudiantes {
 		if(indice==-1) {return false;}
 		for(int i=indice;i<cant-1;i++) {
 			lista[i]=lista[i+1];
+			lista[i+1]=null;
 		}
+		cant--;
 		return true;
 	}
 }

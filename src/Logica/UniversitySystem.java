@@ -29,7 +29,7 @@ public interface UniversitySystem {
 
 	public void desplegarParalelosAsignatura(String codigo);
 
-	public void desplegarAsignaturasInscritas(String correo);
+	public boolean desplegarAsignaturasInscritas(String correo);
 
 	public boolean eliminarAsignatura(String correo, String codigo);
 
@@ -37,5 +37,14 @@ public interface UniversitySystem {
 
 	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, String codigo, int paralelo);
 
-	public boolean guardarEstudiantesEgresados(FileWriter file);
+	public FileWriter guardarEstudiantesEgresados(FileWriter file);
+
+	public String getRut(String correo);
+
+	public boolean comprobarAsignatura(String correo, String codigo);
+
+	public boolean desplegarEstudiantes(String correo, int p);
+
+	public boolean comprobarAsignaturaCursando(String correo, String codigo);
+	
 }

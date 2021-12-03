@@ -98,17 +98,10 @@ public class UniversitySystemImpl implements UniversitySystem {
 	@Override
 	public boolean inscribirAsignatura(String rut, String codigo, int paralelo) {
 		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
-		if (asig == null) {
-			return false;
-		}
 		Paralelo para = asig.getParalelos().getParaleloNumero(paralelo);
-		if (para == null && para.getEstudiantes().getCant() >= 100) {
-			return false;
-		}
-		Estudiante est = (Estudiante) listaCuentas.getCuentaRut(rut);
-		if (est == null && est.getCreditos() + para.getAsignatura().getCreditos() >= 40) {
-			return false;
-		}
+		Estudiante est = (Estudiante) listaCuentas.getCuentaRut(rut);		
+		if (para == null) {System.out.println("Paralelo no encontrado");return false;}
+		if (para.getEstudiantes().getCant() >= 100) {System.out.println("Paralelo está lleno");return false;}
 		para.getEstudiantes().agregar(est);
 		est.getAsignaturasActivas().agregar(para);
 		est.setCreditos(est.getCreditos() + asig.getCreditos());
@@ -172,7 +165,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 			if(asig instanceof Obligatoria) {
 				Obligatoria asigOb = (Obligatoria) asig;
 				if(est.getNivel()>=asigOb.getNivelRequerido()) {
-					if(est.getAsignaturasCursadas().getCursada(asig)==null) {
+					if(est.getAsignaturasCursadas().getCursada(asig)==null&&est.getAsignaturasActivas().getParalelo(asig)==null) {
 						System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
 					}
 				}
@@ -182,7 +175,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 		for(int i = 0;i<listaAsignaturas.getCant();i++) {
 			Asignatura asig = listaAsignaturas.getAsignatura(i);
 			if(asig instanceof Opcional) {
-				if(est.getAsignaturasCursadas().getCursada(asig)==null) {
+				if(est.getAsignaturasCursadas().getCursada(asig)==null&&est.getAsignaturasActivas().getParalelo(asig)==null) {
 					System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
 				}
 			}
@@ -207,11 +200,16 @@ public class UniversitySystemImpl implements UniversitySystem {
 	}
 
 	@Override
-	public void desplegarAsignaturasInscritas(String correo) {
+	public boolean desplegarAsignaturasInscritas(String correo) {
 		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
+		if(est.getAsignaturasActivas().getCant()==0) {
+			System.out.println("No tiene asignaturas inscritas");
+			return false;
+		}
 		for (int i = 0; i < est.getAsignaturasActivas().getCant(); i++) {
 			System.out.println(est.getAsignaturasActivas().getParalelo(i).toString());
 		}
+		return true;
 	}
 
 	@Override
@@ -223,6 +221,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 						est.getCreditos() - est.getAsignaturasActivas().getParalelo(i).getAsignatura().getCreditos());
 				est.getAsignaturasActivas().getParalelo(i).getEstudiantes().eliminar(est);
 				est.getAsignaturasActivas().eliminar(i);
+				return true;
 			}
 		}
 		return false;
@@ -232,7 +231,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 	public void desplegarParalelosProfesor(String correo) {
 		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correo);
 		for (int i = 0; i < prof.getParalelosAsignados().getCant(); i++) {
-			System.out.println(prof.getParalelosAsignados().getParalelo(i).getAsignatura().getNombre() + " Paralelo: "
+			System.out.println("["+(i+1)+"] "+prof.getParalelosAsignados().getParalelo(i).getAsignatura().getNombre() + " Paralelo: "
 					+ prof.getParalelosAsignados().getParalelo(i).getNumero());
 		}
 	}
@@ -265,9 +264,101 @@ public class UniversitySystemImpl implements UniversitySystem {
 	}
 
 	@Override
-	public boolean guardarEstudiantesEgresados(FileWriter file) {
+	public FileWriter guardarEstudiantesEgresados(FileWriter file) {
 		// TODO Auto-generated method stub
+		return file;
+	}
+	
+	public boolean prerequisitosAprovados(Estudiante est,Obligatoria obl) {
+		ListaCursadas cursadas = est.getAsignaturasCursadas();
+		ListaObligatorias prerequisitos = obl.getPrerequisitos();
+		int cont=0;
+		for(int i = 0;i<prerequisitos.getCant();i++) {
+			Obligatoria requisito = prerequisitos.getObligatoria(i);
+			for(int j = 0;j<cursadas.getCant();j++) {
+				Cursada cursada = cursadas.getCursada(j);
+				if(cursada.getAsignatura() instanceof Obligatoria) {
+					Obligatoria asigOblCursada = (Obligatoria) cursada.getAsignatura();
+					if(requisito.equals(asigOblCursada)&&cursada.isAprobada()) {
+						cont++;
+					}
+				}
+			}
+		}
+		if(cont==prerequisitos.getCant()) {
+			return true;
+		}
 		return false;
 	}
 
+	@Override
+	public String getRut(String correo) {
+		String rut = listaCuentas.getCuentaCorreo(correo).getRut();
+		return rut;
+	}
+
+	@Override
+	public boolean comprobarAsignatura(String correo, String codigo) {
+		Estudiante est = (Estudiante)listaCuentas.getCuentaCorreo(correo);
+		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
+		if (asig == null) {
+			System.out.println("Asignatura no encontrada");
+			return false;
+		}
+		if(asig instanceof Obligatoria) {
+			Obligatoria obl = (Obligatoria) asig;
+			if(est.getNivel()<obl.getNivelRequerido()&&prerequisitosAprovados(est, obl)==false) {
+				System.out.println("No cumple con los requerimientos");
+				return false;
+			}
+		}
+		if(asig instanceof Opcional) {
+			Opcional opc = (Opcional) asig;
+			if(est.getCreditos()<opc.getCreditosNecesarios()) {
+				System.out.println("No cumple con los creditos de prerrequisitos");
+				return false;
+			}
+		}
+		if(est.getAsignaturasActivas().getParalelo(asig)!=null) {
+			System.out.println("Ya se esta cursando");
+			return false;
+		}
+		if (est.getCreditos() + asig.getCreditos() > 40) {
+			System.out.println("Sobrecarga de creditos");
+			return false;
+		}
+		if(est.getAsignaturasCursadas().getCursada(asig)!=null) {
+			if (est.getAsignaturasCursadas().getCursada(asig).isAprobada()==true) {
+				System.out.println("Ya ha cursado este curso");
+				return false;
+			}	
+		}
+		return true;
+	}
+
+	@Override
+	public boolean desplegarEstudiantes(String correo, int pIndex) {
+		pIndex--;
+		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correo);
+		if(pIndex>prof.getParalelosAsignados().getCant()||pIndex<1) {
+			return false;
+		}
+		Paralelo para = prof.getParalelosAsignados().getParalelo(pIndex);
+		for(int i = 0;i<para.getEstudiantes().getCant();i++) {
+			Cuenta cuenta = para.getEstudiantes().getEstudiante(i);
+			System.out.println("- "+cuenta.getCorreo()+" "+cuenta.getRut());
+		}
+		return true;
+	}
+
+	@Override
+	public boolean comprobarAsignaturaCursando(String correo, String codigo) {
+		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
+		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
+		if(est.getAsignaturasActivas().getParalelo(asig)!=null) {
+			return true;
+		}
+		return false;
+	}
+	
 }

@@ -1,5 +1,6 @@
 package Logica;
 
+import Dominio.Asignatura;
 import Dominio.Paralelo;
 
 public class ListaParalelos {
@@ -48,6 +49,15 @@ public class ListaParalelos {
 		return lista[index];
 	}
 
+	public Paralelo getParalelo(Asignatura asig) {
+		for(int i = 0;i<cant;i++) {
+			if(lista[i].getAsignatura().equals(asig)) {
+				return lista[i];
+			}
+		}
+		return null;
+	}
+	
 	public Paralelo getParaleloNumero(int numero) {
 		for (int i = 0; i < cant; i++) {
 			if (lista[i].getNumero()==numero) {
@@ -61,10 +71,22 @@ public class ListaParalelos {
 		if(indice==-1) {return false;}
 		for(int i=indice;i<cant-1;i++) {
 			lista[i]=lista[i+1];
+			lista[i+1]=null;
 		}
+		cant--;
 		return true;
 	}
 
+	public boolean eliminar(Paralelo p) {
+		int indice = index(p);
+		if(indice==-1) {return false;}
+		for(int i=indice;i<cant-1;i++) {
+			lista[i]=lista[i+1];
+			lista[i+1]=null;
+		}
+		cant--;
+		return true;
+	}
 	public int index(Paralelo p) {
 		for(int i = 0; i < cant;i++) {
 			if(lista[i].equals(p)) {
@@ -73,12 +95,5 @@ public class ListaParalelos {
 		}
 		return -1;
 	}
-	public boolean eliminar(Paralelo p) {
-		int indice = index(p);
-		if(indice==-1) {return false;}
-		for(int i=indice;i<cant-1;i++) {
-			lista[i]=lista[i+1];
-		}
-		return true;
-	}
+	
 }

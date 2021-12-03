@@ -48,7 +48,7 @@ public class Paralelo {
 		this.estudiantes = estudiantes;
 	}
 	public String toString() {
-		return asignatura.getNombre()+" Paralelo: "+Numero+" Profesor: "+profesor.getCorreo();
+		return "Codigo: "+asignatura.getCodigo()+" "+asignatura.getNombre()+" Paralelo: "+Numero+" Profesor: "+profesor.getCorreo();
 	}
 
 }
