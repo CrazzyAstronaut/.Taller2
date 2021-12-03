@@ -30,7 +30,13 @@ public class Cursada {
 	}
 
 	public void setNota(double nota) {
-		this.nota = nota;
+		if(nota>=3.95) {
+			this.aprobada = true;
+		}
+		else {
+			this.aprobada = false;
+		}
+		this.nota = Math.round(nota*10.0)/10.0;
 	}
 
 	public boolean isAprobada() {

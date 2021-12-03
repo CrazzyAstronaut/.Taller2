@@ -33,6 +33,8 @@ public class App {
 			String rut = sistema.getRut(correo);
 			int menuSemestre = ingresarFecha();
 			if (menuSemestre == 0) {
+				sistema = new UniversitySystemImpl();
+				Lectura(sistema);
 				if (tipoCuenta == 0) {
 					alumnoInicioSemestre(sistema, correo, rut);
 				}
@@ -43,29 +45,35 @@ public class App {
 					System.out.println("No hay Opciones Disponibles");
 				}
 				System.out.println("Guardando...");
-				// guardarEstudiantes(sistema);
+				guardarEstudiantes(sistema);
 			}
+
 			if (menuSemestre == 1) {
+				sistema = new UniversitySystemImpl();
+				Lectura(sistema);
 				if (tipoCuenta == 0) {
 					alumnoMitadSemestre(sistema, correo);
 				} else {
 					System.out.println("No hay Opciones Disponibles");
 				}
 				System.out.println("Guardando...");
-				// guardarEstudiantes(sistema);
+				guardarEstudiantes(sistema);
 			}
+
 			if (menuSemestre == 2) {
+				sistema = new UniversitySystemImpl();
+				Lectura(sistema);
 				if (tipoCuenta == 1) {
 					profesorFinalSemestre(sistema, correo);
 				} else {
 					System.out.println("No hay Opciones Disponibles");
 				}
 				System.out.println("Guardando...");
-				// guardarEstudiantes(sistema);
+				guardarEstudiantes(sistema);
 			}
 			if (menuSemestre == 3) {
 				if (tipoCuenta == 2) {
-					adminCierreSemestre(sistema, cerrar);
+					cerrar = adminCierreSemestre(sistema);
 				} else {
 					System.out.println("No hay Opciones Disponibles");
 				}
@@ -74,24 +82,21 @@ public class App {
 				System.out.println("Disfrute sus vacaciones");
 			}
 		}
-		/*
-		 * boolean cerrar while scanner(log) scanner(fecha) if(fecha)(caso 1) ^ inicio
-		 * semestre (Estudiantes inscribiro eliminar ramos)(Profesor ver alumnos)
-		 * 
-		 * if(fecha)(caso 2) ^ mitad semestre (Estudiantes eliminar ramos)
-		 * if(fecha)(caso 3) ^ final semestre (Profesor ingresar notas) !!!Esto se debe
-		 * hacer si o si if(fecha)(caso 4)//cierre ^ Cierre semestre (Admin generar
-		 * archivo de egresados)
-		 * 
-		 */
+		generarEgresados(sistema);
+		guardarEstudiantes(sistema);
+	}
+
+	private static void generarEgresados(UniversitySystem sistema) throws IOException {
+		FileWriter file = new FileWriter("egresados.txt");
+		sistema.guardarEstudiantesEgresados(file);
 	}
 
 	private static void guardarEstudiantes(UniversitySystem sistema) throws IOException {
-		FileWriter file1 = new FileWriter("estudiantes.txt");
-		sistema.guardarEstudiantes(file1);
+		FileWriter file = new FileWriter("estudiantes.txt");
+		sistema.guardarEstudiantes(file);
 	}
 
-	private static void adminCierreSemestre(UniversitySystem sistema, boolean cerrar) {
+	private static boolean adminCierreSemestre(UniversitySystem sistema) {
 		System.out.println("Bienvenido administrador");
 		System.out.println("[1]	Cerrar semestre	[0]	Salir");
 		s = new Scanner(System.in);
@@ -102,7 +107,8 @@ public class App {
 		}
 		while (o.equals("0") == false) {
 			if (o.equals("1")) {
-				
+				System.out.println("El sistema se cerrará...");
+				return true;
 			}
 			System.out.println("[1]	Cerrar semestre	[0]	Salir");
 			o = s.nextLine();
@@ -111,6 +117,7 @@ public class App {
 				o = s.nextLine();
 			}
 		}
+		return false;
 	}
 
 	private static void profesorFinalSemestre(UniversitySystem sistema, String correo) {
@@ -126,7 +133,7 @@ public class App {
 			if (o.equals("1")) {
 				ingresarNotas(sistema, correo);
 			}
-			System.out.println("[1]	Eliminar asignatura	[0]	Salir");
+			System.out.println("[1]	Ingresar notas	[0]	Salir");
 			o = s.nextLine();
 			while ((o.equals("1")) == false && (o.equals("0")) == false) {
 				System.out.println("Opcion invalida");
@@ -140,36 +147,37 @@ public class App {
 		if (paralelo == -1) {
 			return;
 		}
-		System.out.println("Ingrese el rut del alumno al que decea evaluar: ");
+		System.out.println("Ingrese el rut del alumno al que desea evaluar: ");
 		String rut = s.nextLine();
-		if(rut.equals("0")) {
+		if (rut.equals("0")) {
 			return;
 		}
 		System.out.println("Ingrese la nota: ");
 		String nota = s.nextLine();
-		if(nota.equals("0")) {
+		if (nota.equals("0")) {
 			return;
 		}
 		double n = escribirNota(nota);
-		while (n<1||n>7) {
+		while (n < 1 || n > 7) {
 			System.out.println("Intentelo denuevo: ");
 			nota = s.nextLine();
 			n = escribirNota(nota);
 		}
-		while (sistema.introducirNotaAsignatura(correo, rut, n, paralelo)==false) {
-			System.out.println("Ingrese el rut del alumno al que decea evaluar: ");
+		while (sistema.introducirNotaAsignatura(correo, rut, n, paralelo) == false) {
+			System.out.println("Ingrese el rut del alumno al que desea evaluar: ");
 			rut = s.nextLine();
 			System.out.println("Ingrese la nota: ");
 			nota = s.nextLine();
-			if(nota.equals("0")) {
+			if (nota.equals("0")) {
 				return;
 			}
 			n = escribirNota(nota);
-			while (n<1||n>7) {
+			while (n < 1 || n > 7) {
 				nota = s.nextLine();
 				n = escribirNota(nota);
 			}
 		}
+		sistema.actualizarNivel(rut);
 		System.out.println("Nota ingresada");
 	}
 
@@ -253,7 +261,7 @@ public class App {
 			}
 			p = Integer.parseInt(paralelo);
 		}
-		return p-1;
+		return p - 1;
 	}
 
 	private static void alumnoInicioSemestre(UniversitySystem sistema, String correo, String rut) {
@@ -386,7 +394,6 @@ public class App {
 			sistema.ingresarParalelo(numero, codigo, rut);
 		}
 		arch3.close();
-		// lectura de estudiantes.txt
 		File file4 = new File("estudiantes.txt");
 		Scanner arch4 = new Scanner(file4);
 		while (arch4.hasNextLine()) {
@@ -425,8 +432,10 @@ public class App {
 			}
 
 		}
+		arch4.close();
 	}
 
+	@SuppressWarnings("deprecation")
 	public static int ingresarFecha() {
 		s = new Scanner(System.in);
 		System.out.println("dia: ");

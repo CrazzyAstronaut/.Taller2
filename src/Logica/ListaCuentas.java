@@ -1,7 +1,6 @@
 package Logica;
 
 import Dominio.Cuenta;
-import Dominio.Estudiante;
 
 public class ListaCuentas {
 	private int cant;
@@ -72,5 +71,15 @@ public class ListaCuentas {
 			}
 		}
 		return null;
+	}
+
+	public boolean eliminar(int indice) {
+		if(indice==-1) {return false;}
+		for(int i=indice;i<cant-1;i++) {
+			lista[i]=lista[i+1];
+			lista[i+1]=null;
+		}
+		cant--;
+		return true;
 	}
 }

@@ -99,9 +99,15 @@ public class UniversitySystemImpl implements UniversitySystem {
 	public boolean inscribirAsignatura(String rut, String codigo, int paralelo) {
 		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
 		Paralelo para = asig.getParalelos().getParaleloNumero(paralelo);
-		Estudiante est = (Estudiante) listaCuentas.getCuentaRut(rut);		
-		if (para == null) {System.out.println("Paralelo no encontrado");return false;}
-		if (para.getEstudiantes().getCant() >= 100) {System.out.println("Paralelo está lleno");return false;}
+		Estudiante est = (Estudiante) listaCuentas.getCuentaRut(rut);
+		if (para == null) {
+			System.out.println("Paralelo no encontrado");
+			return false;
+		}
+		if (para.getEstudiantes().getCant() >= 100) {
+			System.out.println("Paralelo está lleno");
+			return false;
+		}
 		para.getEstudiantes().agregar(est);
 		est.getAsignaturasActivas().agregar(para);
 		est.setCreditos(est.getCreditos() + asig.getCreditos());
@@ -109,7 +115,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 	}
 
 	@Override
-	public boolean guardarEstudiantes(FileWriter file) {
+	public FileWriter guardarEstudiantes(FileWriter file) {
 		PrintWriter escritura = new PrintWriter(file);
 		for (int i = 0; i < listaCuentas.getCant(); i++) {
 			Cuenta cuenta = listaCuentas.getCuenta(i);
@@ -118,7 +124,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 				escritura.println(e.getRut() + "," + e.getCorreo() + "," + e.getNivel() + "," + e.getContraseña());
 				escritura.println(e.getAsignaturasCursadas().getCant());
 				for (int a = 0; a < e.getAsignaturasCursadas().getCant(); a++) {
-					escritura.println(e.getAsignaturasCursadas().getCursada(a).getAsignatura().getNombre() + ","
+					escritura.println(e.getAsignaturasCursadas().getCursada(a).getAsignatura().getCodigo() + ","
 							+ e.getAsignaturasCursadas().getCursada(a).getNota());
 				}
 				escritura.println(e.getAsignaturasActivas().getCant());
@@ -128,7 +134,8 @@ public class UniversitySystemImpl implements UniversitySystem {
 				}
 			}
 		}
-		return false;
+		escritura.close();
+		return file;
 	}
 
 	@Override
@@ -150,41 +157,40 @@ public class UniversitySystemImpl implements UniversitySystem {
 	}
 
 	@Override
-	public void ingresarFecha(String fecha) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void desplegarAsignaturasInscribir(String correo) {
 		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
-		System.out.println("Creditos: "+est.getCreditos()+"/40");
+		System.out.println("Creditos: " + est.getCreditos() + "/40");
 		System.out.println(" - Lista de asiganturas obligatorias nuevas: ");
-		for(int i = 0;i<listaAsignaturas.getCant();i++) {
+		for (int i = 0; i < listaAsignaturas.getCant(); i++) {
 			Asignatura asig = listaAsignaturas.getAsignatura(i);
-			if(asig instanceof Obligatoria) {
+			if (asig instanceof Obligatoria) {
 				Obligatoria asigOb = (Obligatoria) asig;
-				if(est.getNivel()>=asigOb.getNivelRequerido()) {
-					if(est.getAsignaturasCursadas().getCursada(asig)==null&&est.getAsignaturasActivas().getParalelo(asig)==null) {
-						System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
+				if (est.getNivel() >= asigOb.getNivelRequerido()) {
+					if (est.getAsignaturasCursadas().getCursada(asig) == null
+							&& est.getAsignaturasActivas().getParalelo(asig) == null) {
+						System.out.println("	- " + asig.getNombre() + " Codigo: " + asig.getCodigo() + " Creditos: "
+								+ asig.getCreditos());
 					}
 				}
 			}
 		}
 		System.out.println(" - Lista de asiganturas opcionales nuevas: ");
-		for(int i = 0;i<listaAsignaturas.getCant();i++) {
+		for (int i = 0; i < listaAsignaturas.getCant(); i++) {
 			Asignatura asig = listaAsignaturas.getAsignatura(i);
-			if(asig instanceof Opcional) {
-				if(est.getAsignaturasCursadas().getCursada(asig)==null&&est.getAsignaturasActivas().getParalelo(asig)==null) {
-					System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
+			if (asig instanceof Opcional) {
+				if (est.getAsignaturasCursadas().getCursada(asig) == null
+						&& est.getAsignaturasActivas().getParalelo(asig) == null) {
+					System.out.println("	- " + asig.getNombre() + " Codigo: " + asig.getCodigo() + " Creditos: "
+							+ asig.getCreditos());
 				}
 			}
 		}
 		System.out.println(" - Lista de asiganturas repetidas: ");
-		for(int i =0;i<est.getAsignaturasCursadas().getCant();i++) {
-			if(est.getAsignaturasCursadas().getCursada(i).isAprobada()==false) {
+		for (int i = 0; i < est.getAsignaturasCursadas().getCant(); i++) {
+			if (est.getAsignaturasCursadas().getCursada(i).isAprobada() == false) {
 				Asignatura asig = est.getAsignaturasCursadas().getCursada(i).getAsignatura();
-				System.out.println("	- "+asig.getNombre()+" Codigo: "+asig.getCodigo()+" Creditos: "+asig.getCreditos());
+				System.out.println("	- " + asig.getNombre() + " Codigo: " + asig.getCodigo() + " Creditos: "
+						+ asig.getCreditos());
 			}
 		}
 	}
@@ -202,7 +208,7 @@ public class UniversitySystemImpl implements UniversitySystem {
 	@Override
 	public boolean desplegarAsignaturasInscritas(String correo) {
 		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
-		if(est.getAsignaturasActivas().getCant()==0) {
+		if (est.getAsignaturasActivas().getCant() == 0) {
 			System.out.println("No tiene asignaturas inscritas");
 			return false;
 		}
@@ -231,8 +237,9 @@ public class UniversitySystemImpl implements UniversitySystem {
 	public void desplegarParalelosProfesor(String correo) {
 		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correo);
 		for (int i = 0; i < prof.getParalelosAsignados().getCant(); i++) {
-			System.out.println("["+(i+1)+"] "+prof.getParalelosAsignados().getParalelo(i).getAsignatura().getNombre() + " Paralelo: "
-					+ prof.getParalelosAsignados().getParalelo(i).getNumero());
+			System.out.println(
+					"[" + (i + 1) + "] " + prof.getParalelosAsignados().getParalelo(i).getAsignatura().getNombre()
+							+ " Paralelo: " + prof.getParalelosAsignados().getParalelo(i).getNumero());
 		}
 	}
 
@@ -254,8 +261,14 @@ public class UniversitySystemImpl implements UniversitySystem {
 			return false;
 		}
 		Asignatura asig = para.getAsignatura();
-		Cursada cursada = new Cursada(asig, nota);
-		est.getAsignaturasCursadas().agregar(cursada);
+		Cursada cursada = est.getAsignaturasCursadas().getCursada(asig);
+		if(cursada==null) {
+			cursada = new Cursada(asig, nota);
+			est.getAsignaturasCursadas().agregar(cursada);
+		}
+		else {
+			cursada.setNota(nota);
+		}
 		est.getAsignaturasActivas().eliminar(para);
 		para.getEstudiantes().eliminar(est);
 		est.setCreditos(est.getCreditos() - asig.getCreditos());
@@ -264,27 +277,37 @@ public class UniversitySystemImpl implements UniversitySystem {
 
 	@Override
 	public FileWriter guardarEstudiantesEgresados(FileWriter file) {
-		// TODO Auto-generated method stub
+		PrintWriter escritura = new PrintWriter(file);
+		for(int i = 0;i<listaCuentas.getCant();i++) {
+			if(listaCuentas.getCuenta(i) instanceof Estudiante) {
+				Estudiante est = (Estudiante) listaCuentas.getCuenta(i);
+				if(est.getNivel()==11) {
+					escritura.println(est.getRut());
+					listaCuentas.eliminar(i);
+				}
+			}
+		}
+		escritura.close();
 		return file;
 	}
-	
-	public boolean prerequisitosAprovados(Estudiante est,Obligatoria obl) {
+
+	public boolean prerequisitosAprovados(Estudiante est, Obligatoria obl) {
 		ListaCursadas cursadas = est.getAsignaturasCursadas();
 		ListaObligatorias prerequisitos = obl.getPrerequisitos();
-		int cont=0;
-		for(int i = 0;i<prerequisitos.getCant();i++) {
+		int cont = 0;
+		for (int i = 0; i < prerequisitos.getCant(); i++) {
 			Obligatoria requisito = prerequisitos.getObligatoria(i);
-			for(int j = 0;j<cursadas.getCant();j++) {
+			for (int j = 0; j < cursadas.getCant(); j++) {
 				Cursada cursada = cursadas.getCursada(j);
-				if(cursada.getAsignatura() instanceof Obligatoria) {
+				if (cursada.getAsignatura() instanceof Obligatoria) {
 					Obligatoria asigOblCursada = (Obligatoria) cursada.getAsignatura();
-					if(requisito.equals(asigOblCursada)&&cursada.isAprobada()) {
+					if (requisito.equals(asigOblCursada) && cursada.isAprobada()) {
 						cont++;
 					}
 				}
 			}
 		}
-		if(cont==prerequisitos.getCant()) {
+		if (cont == prerequisitos.getCant()) {
 			return true;
 		}
 		return false;
@@ -292,33 +315,36 @@ public class UniversitySystemImpl implements UniversitySystem {
 
 	@Override
 	public String getRut(String correo) {
+		if (correo.equals("Admin")) {
+			return "Admin";
+		}
 		String rut = listaCuentas.getCuentaCorreo(correo).getRut();
 		return rut;
 	}
 
 	@Override
 	public boolean comprobarAsignatura(String correo, String codigo) {
-		Estudiante est = (Estudiante)listaCuentas.getCuentaCorreo(correo);
+		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
 		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
 		if (asig == null) {
 			System.out.println("Asignatura no encontrada");
 			return false;
 		}
-		if(asig instanceof Obligatoria) {
+		if (asig instanceof Obligatoria) {
 			Obligatoria obl = (Obligatoria) asig;
-			if(est.getNivel()<obl.getNivelRequerido()&&prerequisitosAprovados(est, obl)==false) {
+			if (est.getNivel() < obl.getNivelRequerido() && prerequisitosAprovados(est, obl) == false) {
 				System.out.println("No cumple con los requerimientos");
 				return false;
 			}
 		}
-		if(asig instanceof Opcional) {
+		if (asig instanceof Opcional) {
 			Opcional opc = (Opcional) asig;
-			if(est.getCreditos()<opc.getCreditosNecesarios()) {
+			if (est.getCreditos() < opc.getCreditosNecesarios()) {
 				System.out.println("No cumple con los creditos de prerrequisitos");
 				return false;
 			}
 		}
-		if(est.getAsignaturasActivas().getParalelo(asig)!=null) {
+		if (est.getAsignaturasActivas().getParalelo(asig) != null) {
 			System.out.println("Ya se esta cursando");
 			return false;
 		}
@@ -326,11 +352,11 @@ public class UniversitySystemImpl implements UniversitySystem {
 			System.out.println("Sobrecarga de creditos");
 			return false;
 		}
-		if(est.getAsignaturasCursadas().getCursada(asig)!=null) {
-			if (est.getAsignaturasCursadas().getCursada(asig).isAprobada()==true) {
+		if (est.getAsignaturasCursadas().getCursada(asig) != null) {
+			if (est.getAsignaturasCursadas().getCursada(asig).isAprobada() == true) {
 				System.out.println("Ya ha cursado este curso");
 				return false;
-			}	
+			}
 		}
 		return true;
 	}
@@ -339,14 +365,14 @@ public class UniversitySystemImpl implements UniversitySystem {
 	public boolean desplegarEstudiantes(String correo, int pIndex) {
 		pIndex--;
 		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correo);
-		if(pIndex+1>prof.getParalelosAsignados().getCant()||pIndex<0) {
+		if (pIndex + 1 > prof.getParalelosAsignados().getCant() || pIndex < 0) {
 			return false;
 		}
 		Paralelo para = prof.getParalelosAsignados().getParalelo(pIndex);
-		System.out.println("Estudiantes de "+para.getAsignatura().getNombre()+" paralelo: "+para.getNumero());
-		for(int i = 0;i<para.getEstudiantes().getCant();i++) {
+		System.out.println("Estudiantes de " + para.getAsignatura().getNombre() + " paralelo: " + para.getNumero());
+		for (int i = 0; i < para.getEstudiantes().getCant(); i++) {
 			Cuenta cuenta = para.getEstudiantes().getEstudiante(i);
-			System.out.println("- "+cuenta.getCorreo()+" "+cuenta.getRut());
+			System.out.println("- " + cuenta.getCorreo() + " " + cuenta.getRut());
 		}
 		return true;
 	}
@@ -355,10 +381,40 @@ public class UniversitySystemImpl implements UniversitySystem {
 	public boolean comprobarAsignaturaCursando(String correo, String codigo) {
 		Estudiante est = (Estudiante) listaCuentas.getCuentaCorreo(correo);
 		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
-		if(est.getAsignaturasActivas().getParalelo(asig)!=null) {
+		if (est.getAsignaturasActivas().getParalelo(asig) != null) {
 			return true;
 		}
 		return false;
 	}
-	
+
+	@Override
+	public void actualizarNivel(String rut) {
+		Estudiante est = (Estudiante) listaCuentas.getCuentaRut(rut);
+		int nivel = 1;
+		while ((nivel == 11) == false) {
+			for (int i = 0; i < listaAsignaturas.getCant(); i++) {
+				if (listaAsignaturas.getAsignatura(i) instanceof Obligatoria) {
+					Obligatoria obl = (Obligatoria) listaAsignaturas.getAsignatura(i);
+					if (obl.getNivelRequerido() == nivel) {
+						Cursada curs = est.getAsignaturasCursadas().getCursada(listaAsignaturas.getAsignatura(i));
+						if (curs == null) {
+							est.setNivel(nivel);
+							System.out.println("Nivel nuevo :" + nivel);
+							return;
+						}
+						if (curs.isAprobada() == false) {
+							est.setNivel(nivel);
+							System.out.println("Nivel nuevo :" + nivel);
+							return;
+						}
+					}
+				}
+			}
+			nivel++;
+		}
+		est.setNivel(nivel);
+		System.out.println("Nivel nuevo :" + nivel);
+		return;
+	}
+
 }
