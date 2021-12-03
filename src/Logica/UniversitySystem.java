@@ -35,7 +35,7 @@ public interface UniversitySystem {
 
 	public void desplegarParalelosProfesor(String correo);
 
-	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, String codigo, int paralelo);
+	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, int indexParalelo);
 
 	public FileWriter guardarEstudiantesEgresados(FileWriter file);
 

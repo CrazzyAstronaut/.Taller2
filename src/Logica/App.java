@@ -91,19 +91,99 @@ public class App {
 		sistema.guardarEstudiantes(file1);
 	}
 
-	
 	private static void adminCierreSemestre(UniversitySystem sistema, boolean cerrar) {
 		System.out.println("Bienvenido administrador");
-
+		System.out.println("[1]	Cerrar semestre	[0]	Salir");
+		s = new Scanner(System.in);
+		String o = s.nextLine();
+		while ((o.equals("1")) == false && (o.equals("0")) == false) {
+			System.out.println("Opcion invalida");
+			o = s.nextLine();
+		}
+		while (o.equals("0") == false) {
+			if (o.equals("1")) {
+				
+			}
+			System.out.println("[1]	Cerrar semestre	[0]	Salir");
+			o = s.nextLine();
+			while ((o.equals("1")) == false && (o.equals("0")) == false) {
+				System.out.println("Opcion invalida");
+				o = s.nextLine();
+			}
+		}
 	}
 
-	
 	private static void profesorFinalSemestre(UniversitySystem sistema, String correo) {
 		System.out.println("Bienvenido al final de semestre profesor");
-
+		System.out.println("[1]	Ingresar notas	[0]	Salir");
+		s = new Scanner(System.in);
+		String o = s.nextLine();
+		while ((o.equals("1")) == false && (o.equals("0")) == false) {
+			System.out.println("Opcion invalida");
+			o = s.nextLine();
+		}
+		while (o.equals("0") == false) {
+			if (o.equals("1")) {
+				ingresarNotas(sistema, correo);
+			}
+			System.out.println("[1]	Eliminar asignatura	[0]	Salir");
+			o = s.nextLine();
+			while ((o.equals("1")) == false && (o.equals("0")) == false) {
+				System.out.println("Opcion invalida");
+				o = s.nextLine();
+			}
+		}
 	}
 
-	
+	private static void ingresarNotas(UniversitySystem sistema, String correo) {
+		int paralelo = verAlumnos(sistema, correo);
+		if (paralelo == -1) {
+			return;
+		}
+		System.out.println("Ingrese el rut del alumno al que decea evaluar: ");
+		String rut = s.nextLine();
+		if(rut.equals("0")) {
+			return;
+		}
+		System.out.println("Ingrese la nota: ");
+		String nota = s.nextLine();
+		if(nota.equals("0")) {
+			return;
+		}
+		double n = escribirNota(nota);
+		while (n<1||n>7) {
+			System.out.println("Intentelo denuevo: ");
+			nota = s.nextLine();
+			n = escribirNota(nota);
+		}
+		while (sistema.introducirNotaAsignatura(correo, rut, n, paralelo)==false) {
+			System.out.println("Ingrese el rut del alumno al que decea evaluar: ");
+			rut = s.nextLine();
+			System.out.println("Ingrese la nota: ");
+			nota = s.nextLine();
+			if(nota.equals("0")) {
+				return;
+			}
+			n = escribirNota(nota);
+			while (n<1||n>7) {
+				nota = s.nextLine();
+				n = escribirNota(nota);
+			}
+		}
+		System.out.println("Nota ingresada");
+	}
+
+	private static double escribirNota(String nota) {
+		double notad;
+		try {
+			notad = Double.parseDouble(nota);
+		} catch (Exception e) {
+			System.out.println("Error, nota invalida");
+			return -1;
+		}
+		return notad;
+	}
+
 	private static void alumnoMitadSemestre(UniversitySystem sistema, String correo) {
 		System.out.println("Bienvenido a la mitad de semestre alumno");
 		System.out.println("[1]	Eliminar asignatura	[0]	Salir");
@@ -115,7 +195,7 @@ public class App {
 		}
 		while (o.equals("0") == false) {
 			if (o.equals("1")) {
-				eliminarAsignatura(sistema,correo);
+				eliminarAsignatura(sistema, correo);
 			}
 			System.out.println("[1]	Eliminar asignatura	[0]	Salir");
 			o = s.nextLine();
@@ -125,7 +205,6 @@ public class App {
 			}
 		}
 	}
-	
 
 	private static void profesorInicioSemestre(UniversitySystem sistema, String correo) {
 		System.out.println("Bienvenido al comienzo de semestre profesor");
@@ -138,7 +217,7 @@ public class App {
 		}
 		while (o.equals("0") == false) {
 			if (o.equals("1")) {
-				verAlumnos(sistema,correo);
+				verAlumnos(sistema, correo);
 			}
 			System.out.println("[1]	Chequear alumnos	[0]	Salir");
 			o = s.nextLine();
@@ -149,31 +228,32 @@ public class App {
 		}
 	}
 
-	private static void verAlumnos(UniversitySystem sistema, String correo) {
+	private static int verAlumnos(UniversitySystem sistema, String correo) {
 		System.out.println("Lista de asignaturas");
 		sistema.desplegarParalelosProfesor(correo);
 		System.out.println("Ingrese el paralelo que decea ver: ");
 		String paralelo = s.nextLine();
-		while (correctNumber(paralelo)==false) {
+		while (correctNumber(paralelo) == false) {
 			System.out.println("Intentelo denuevo: ");
 			paralelo = s.nextLine();
-			if (paralelo.equals("0")) {
-				return;
-			}
+		}
+		if (paralelo.equals("0")) {
+			return -1;
 		}
 		int p = Integer.parseInt(paralelo);
-		while (sistema.desplegarEstudiantes(correo,p)==false) {
+		while (sistema.desplegarEstudiantes(correo, p) == false) {
 			System.out.println("Intentelo denuevo: ");
 			paralelo = s.nextLine();
-			while (correctNumber(paralelo)==false) {
+			while (correctNumber(paralelo) == false) {
 				System.out.println("Intentelo denuevo: ");
 				paralelo = s.nextLine();
-				if (paralelo.equals("0")) {
-					return;
-				}
-				p = Integer.parseInt(paralelo);
 			}
+			if (paralelo.equals("0")) {
+				return -1;
+			}
+			p = Integer.parseInt(paralelo);
 		}
+		return p-1;
 	}
 
 	private static void alumnoInicioSemestre(UniversitySystem sistema, String correo, String rut) {
@@ -187,10 +267,10 @@ public class App {
 		}
 		while (o.equals("0") == false) {
 			if (o.equals("1")) {
-				inscribirAsignaturas(sistema,correo,rut);
+				inscribirAsignaturas(sistema, correo, rut);
 			}
 			if (o.equals("2")) {
-				eliminarAsignatura(sistema,correo);
+				eliminarAsignatura(sistema, correo);
 			}
 			System.out.println("[1]	Inscribir asignatura	[2]	Eliminar asignatura	[0]	Salir");
 			o = s.nextLine();
@@ -201,12 +281,11 @@ public class App {
 		}
 	}
 
-
 	public static void inscribirAsignaturas(UniversitySystem sistema, String correo, String rut) {
 		sistema.desplegarAsignaturasInscribir(correo);
 		System.out.println("Ingrese el codigo del ramo que desea inscribir: ");
 		String codigo = s.nextLine();
-		while (sistema.comprobarAsignatura(correo, codigo)==false) {
+		while (sistema.comprobarAsignatura(correo, codigo) == false) {
 			System.out.println("Intentelo denuevo: ");
 			codigo = s.nextLine();
 			if (codigo.equals("0")) {
@@ -216,7 +295,7 @@ public class App {
 		sistema.desplegarParalelosAsignatura(codigo);
 		System.out.println("Ingrese el paralelo: ");
 		String paralelo = s.nextLine();
-		while (correctNumber(paralelo)==false) {
+		while (correctNumber(paralelo) == false) {
 			System.out.println("Intentelo denuevo: ");
 			paralelo = s.nextLine();
 			if (paralelo.equals("0")) {
@@ -224,10 +303,10 @@ public class App {
 			}
 		}
 		int p = Integer.parseInt(paralelo);
-		while (sistema.inscribirAsignatura(rut, codigo, p)==false) {
+		while (sistema.inscribirAsignatura(rut, codigo, p) == false) {
 			System.out.println("Intentelo denuevo: ");
 			paralelo = s.nextLine();
-			while (correctNumber(paralelo)==false) {
+			while (correctNumber(paralelo) == false) {
 				System.out.println("Intentelo denuevo: ");
 				paralelo = s.nextLine();
 				if (paralelo.equals("0")) {
@@ -238,25 +317,25 @@ public class App {
 		}
 		System.out.println("Asignatura Inscrita");
 	}
+
 	private static void eliminarAsignatura(UniversitySystem sistema, String correo) {
 		System.out.println("Lista de Asignaturas inscritas");
-		if(sistema.desplegarAsignaturasInscritas(correo)==false) {
+		if (sistema.desplegarAsignaturasInscritas(correo) == false) {
 			return;
 		}
 		System.out.println("Ingrese el codigo de la asignatura que desea eliminar: ");
 		String codigo = s.nextLine();
-		while (sistema.comprobarAsignaturaCursando(correo, codigo)==false) {
+		while (sistema.comprobarAsignaturaCursando(correo, codigo) == false) {
 			System.out.println("Intentelo denuevo: ");
 			codigo = s.nextLine();
 			if (codigo.equals("0")) {
 				return;
 			}
 		}
-		if(sistema.eliminarAsignatura(correo, codigo)==false) {
+		if (sistema.eliminarAsignatura(correo, codigo) == false) {
 			System.out.println("No se pudo eliminar la asignatura");
 			return;
-		}
-		else {
+		} else {
 			System.out.println("Asignatura eliminada");
 		}
 	}

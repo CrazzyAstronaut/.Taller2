@@ -237,29 +237,28 @@ public class UniversitySystemImpl implements UniversitySystem {
 	}
 
 	@Override
-	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, String codigo, int paralelo) {
+	public boolean introducirNotaAsignatura(String correoPro, String rutEst, double nota, int indexParalelo) {
 		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correoPro);
 		Estudiante est = (Estudiante) listaCuentas.getCuentaRut(rutEst);
 		if (est == null) {
+			System.out.println("Estudiante no encontrado");
 			return false;
 		}
-		Asignatura asig = listaAsignaturas.getAsignatura(codigo);
-		if (asig == null) {
-			return false;
-		}
-		Paralelo para = asig.getParalelos().getParaleloNumero(paralelo);
+		Paralelo para = prof.getParalelosAsignados().getParalelo(indexParalelo);
 		if (para == null) {
-			return false;
-		}
-		if (para.getProfesor().equals(prof) == false) {
+			System.out.println("Paralelo no encontrado");
 			return false;
 		}
 		if (para.getEstudiantes().index(est) == -1) {
+			System.out.println("Estudiante no encontrado en el paralelo");
 			return false;
 		}
+		Asignatura asig = para.getAsignatura();
 		Cursada cursada = new Cursada(asig, nota);
 		est.getAsignaturasCursadas().agregar(cursada);
 		est.getAsignaturasActivas().eliminar(para);
+		para.getEstudiantes().eliminar(est);
+		est.setCreditos(est.getCreditos() - asig.getCreditos());
 		return true;
 	}
 
@@ -340,10 +339,11 @@ public class UniversitySystemImpl implements UniversitySystem {
 	public boolean desplegarEstudiantes(String correo, int pIndex) {
 		pIndex--;
 		Profesor prof = (Profesor) listaCuentas.getCuentaCorreo(correo);
-		if(pIndex>prof.getParalelosAsignados().getCant()||pIndex<1) {
+		if(pIndex+1>prof.getParalelosAsignados().getCant()||pIndex<0) {
 			return false;
 		}
 		Paralelo para = prof.getParalelosAsignados().getParalelo(pIndex);
+		System.out.println("Estudiantes de "+para.getAsignatura().getNombre()+" paralelo: "+para.getNumero());
 		for(int i = 0;i<para.getEstudiantes().getCant();i++) {
 			Cuenta cuenta = para.getEstudiantes().getEstudiante(i);
 			System.out.println("- "+cuenta.getCorreo()+" "+cuenta.getRut());
