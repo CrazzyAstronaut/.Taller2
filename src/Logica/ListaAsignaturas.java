@@ -49,9 +49,10 @@ public class ListaAsignaturas {
 	public Asignatura getAsignatura(int index) {
 		return lista[index];
 	}
+
 	public Asignatura getAsignatura(String codigo) {
-		for(int i = 0 ; i < cant ; i++ ) {
-			if(lista[i].getCodigo().equals(codigo)) {
+		for (int i = 0; i < cant; i++) {
+			if (lista[i].getCodigo().equals(codigo)) {
 				return lista[i];
 			}
 		}

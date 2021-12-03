@@ -2,6 +2,9 @@ package Logica;
 
 import java.io.FileWriter;
 
+import Dominio.Estudiante;
+import Dominio.Obligatoria;
+
 public interface UniversitySystem {
 	public boolean ingresarProfesor(String rut, String correo, String contraseña, int saldo);
 
@@ -40,6 +43,8 @@ public interface UniversitySystem {
 	public boolean comprobarAsignatura(String correo, String codigo);
 
 	public boolean comprobarAsignaturaCursando(String correo, String codigo);
+	
+	public boolean prerequisitosAprovados(Estudiante est, Obligatoria obl)
 
 	public void actualizarNivel(String rut);
 

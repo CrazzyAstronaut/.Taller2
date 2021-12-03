@@ -1,3 +1,5 @@
 22.222.222-1,prof1@profesores.cl,cde456,13500000
 22.222.222-2,prof2@profesores.cl,cde456,23500000
 22.222.222-3,prof3@profesores.cl,cde456,13000000
+22.222.222-4,prof4@profesores.cl,cde456,13000000
+22.222.222-5,prof5@profesores.cl,cde456,13000000

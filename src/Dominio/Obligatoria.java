@@ -7,7 +7,7 @@ public class Obligatoria extends Asignatura {
 	private ListaObligatorias prerequisitos;
 
 	public Obligatoria(String nombre, String codigo, int creditos, int nivelRequerido) {
-		super(nombre, codigo,creditos);
+		super(nombre, codigo, creditos);
 		NivelRequerido = nivelRequerido;
 		this.prerequisitos = new ListaObligatorias(999);
 	}

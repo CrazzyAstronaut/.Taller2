@@ -6,12 +6,12 @@ import Dominio.Cursada;
 public class ListaCursadas {
 	private int cant;
 	private int max;
-	private Cursada [] lista;
-	
+	private Cursada[] lista;
+
 	public ListaCursadas(int max) {
 		this.max = max;
 		cant = 0;
-		this.lista = new Cursada [max];
+		this.lista = new Cursada[max];
 	}
 
 	public int getCant() {
@@ -37,20 +37,23 @@ public class ListaCursadas {
 	public void setLista(Cursada[] lista) {
 		this.lista = lista;
 	}
+
 	public boolean agregar(Cursada o) {
 		if (cant < max) {
-			lista [cant] = o;
+			lista[cant] = o;
 			cant++;
 			return true;
 		}
 		return false;
 	}
+
 	public Cursada getCursada(int index) {
 		return lista[index];
 	}
+
 	public Cursada getCursada(Asignatura asig) {
-		for(int i = 0;i<cant;i++) {
-			if(lista[i].getAsignatura().equals(asig)) {
+		for (int i = 0; i < cant; i++) {
+			if (lista[i].getAsignatura().equals(asig)) {
 				return lista[i];
 			}
 		}

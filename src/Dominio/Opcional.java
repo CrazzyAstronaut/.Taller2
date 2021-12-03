@@ -4,7 +4,7 @@ public class Opcional extends Asignatura {
 	private int CreditosNecesarios;
 
 	public Opcional(String nombre, String codigo, int creditos, int creditosNecesarios) {
-		super(nombre, codigo,creditos);
+		super(nombre, codigo, creditos);
 		CreditosNecesarios = creditosNecesarios;
 	}
 

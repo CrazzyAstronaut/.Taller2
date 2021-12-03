@@ -8,13 +8,12 @@ public class Cursada {
 	public Cursada(Asignatura asignatura, double nota) {
 		super();
 		this.asignatura = asignatura;
-		if(nota>=3.95) {
+		if (nota >= 3.95) {
 			this.aprobada = true;
-		}
-		else {
+		} else {
 			this.aprobada = false;
 		}
-		this.nota = Math.round(nota*10.0)/10.0;
+		this.nota = Math.round(nota * 10.0) / 10.0;
 	}
 
 	public Asignatura getAsignatura() {
@@ -30,13 +29,12 @@ public class Cursada {
 	}
 
 	public void setNota(double nota) {
-		if(nota>=3.95) {
+		if (nota >= 3.95) {
 			this.aprobada = true;
-		}
-		else {
+		} else {
 			this.aprobada = false;
 		}
-		this.nota = Math.round(nota*10.0)/10.0;
+		this.nota = Math.round(nota * 10.0) / 10.0;
 	}
 
 	public boolean isAprobada() {

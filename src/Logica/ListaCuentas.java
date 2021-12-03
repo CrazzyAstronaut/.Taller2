@@ -5,12 +5,12 @@ import Dominio.Cuenta;
 public class ListaCuentas {
 	private int cant;
 	private int max;
-	private Cuenta [] lista;
-	
+	private Cuenta[] lista;
+
 	public ListaCuentas(int max) {
 		this.max = max;
 		cant = 0;
-		this.lista = new Cuenta [max];
+		this.lista = new Cuenta[max];
 	}
 
 	public int getCant() {
@@ -36,28 +36,32 @@ public class ListaCuentas {
 	public void setLista(Cuenta[] lista) {
 		this.lista = lista;
 	}
+
 	public boolean agregar(Cuenta o) {
 		if (cant < max) {
-			lista [cant] = o;
+			lista[cant] = o;
 			cant++;
 			return true;
 		}
 		return false;
 	}
+
 	public Cuenta getCuenta(int index) {
 		return lista[index];
 	}
+
 	public Cuenta getCuentaRut(String Rut) {
-		for(int i = 0; i < cant ; i++) {
-			if(lista[i].getRut().equals(Rut)) {
+		for (int i = 0; i < cant; i++) {
+			if (lista[i].getRut().equals(Rut)) {
 				return lista[i];
 			}
 		}
 		return null;
 	}
+
 	public Cuenta getCuenta(String correo, String contraseña) {
-		for(int i = 0; i < cant ; i++) {
-			if(lista[i].getCorreo().equals(correo)&&lista[i].getContraseña().equals(contraseña)) {
+		for (int i = 0; i < cant; i++) {
+			if (lista[i].getCorreo().equals(correo) && lista[i].getContraseña().equals(contraseña)) {
 				return lista[i];
 			}
 		}
@@ -65,8 +69,8 @@ public class ListaCuentas {
 	}
 
 	public Cuenta getCuentaCorreo(String correo) {
-		for(int i = 0; i < cant ; i++) {
-			if(lista[i].getCorreo().equals(correo)) {
+		for (int i = 0; i < cant; i++) {
+			if (lista[i].getCorreo().equals(correo)) {
 				return lista[i];
 			}
 		}
@@ -74,10 +78,12 @@ public class ListaCuentas {
 	}
 
 	public boolean eliminar(int indice) {
-		if(indice==-1) {return false;}
-		for(int i=indice;i<cant-1;i++) {
-			lista[i]=lista[i+1];
-			lista[i+1]=null;
+		if (indice == -1) {
+			return false;
+		}
+		for (int i = indice; i < cant - 1; i++) {
+			lista[i] = lista[i + 1];
+			lista[i + 1] = null;
 		}
 		cant--;
 		return true;

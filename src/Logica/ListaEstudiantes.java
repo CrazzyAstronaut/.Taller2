@@ -5,12 +5,12 @@ import Dominio.Estudiante;
 public class ListaEstudiantes {
 	private int cant;
 	private int max;
-	private Estudiante [] lista;
-	
+	private Estudiante[] lista;
+
 	public ListaEstudiantes(int max) {
 		this.max = max;
 		cant = 0;
-		this.lista = new Estudiante [max];
+		this.lista = new Estudiante[max];
 	}
 
 	public int getCant() {
@@ -36,32 +36,37 @@ public class ListaEstudiantes {
 	public void setLista(Estudiante[] lista) {
 		this.lista = lista;
 	}
+
 	public boolean agregar(Estudiante o) {
 		if (cant < max) {
-			lista [cant] = o;
+			lista[cant] = o;
 			cant++;
 			return true;
 		}
 		return false;
 	}
+
 	public Estudiante getEstudiante(int index) {
 		return lista[index];
 	}
 
 	public int index(Estudiante est) {
-		for(int i = 0; i < cant;i++) {
-			if(lista[i].equals(est)) {
+		for (int i = 0; i < cant; i++) {
+			if (lista[i].equals(est)) {
 				return i;
 			}
 		}
 		return -1;
 	}
+
 	public boolean eliminar(Estudiante est) {
 		int indice = index(est);
-		if(indice==-1) {return false;}
-		for(int i=indice;i<cant-1;i++) {
-			lista[i]=lista[i+1];
-			lista[i+1]=null;
+		if (indice == -1) {
+			return false;
+		}
+		for (int i = indice; i < cant - 1; i++) {
+			lista[i] = lista[i + 1];
+			lista[i + 1] = null;
 		}
 		cant--;
 		return true;

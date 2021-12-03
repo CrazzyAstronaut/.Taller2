@@ -262,11 +262,10 @@ public class UniversitySystemImpl implements UniversitySystem {
 		}
 		Asignatura asig = para.getAsignatura();
 		Cursada cursada = est.getAsignaturasCursadas().getCursada(asig);
-		if(cursada==null) {
+		if (cursada == null) {
 			cursada = new Cursada(asig, nota);
 			est.getAsignaturasCursadas().agregar(cursada);
-		}
-		else {
+		} else {
 			cursada.setNota(nota);
 		}
 		est.getAsignaturasActivas().eliminar(para);
@@ -278,10 +277,10 @@ public class UniversitySystemImpl implements UniversitySystem {
 	@Override
 	public FileWriter guardarEstudiantesEgresados(FileWriter file) {
 		PrintWriter escritura = new PrintWriter(file);
-		for(int i = 0;i<listaCuentas.getCant();i++) {
-			if(listaCuentas.getCuenta(i) instanceof Estudiante) {
+		for (int i = 0; i < listaCuentas.getCant(); i++) {
+			if (listaCuentas.getCuenta(i) instanceof Estudiante) {
 				Estudiante est = (Estudiante) listaCuentas.getCuenta(i);
-				if(est.getNivel()==11) {
+				if (est.getNivel() == 11) {
 					escritura.println(est.getRut());
 					listaCuentas.eliminar(i);
 				}
