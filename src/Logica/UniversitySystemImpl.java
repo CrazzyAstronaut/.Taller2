@@ -290,6 +290,8 @@ public class UniversitySystemImpl implements UniversitySystem {
 		return file;
 	}
 
+	
+	@Override
 	public boolean prerequisitosAprovados(Estudiante est, Obligatoria obl) {
 		ListaCursadas cursadas = est.getAsignaturasCursadas();
 		ListaObligatorias prerequisitos = obl.getPrerequisitos();
