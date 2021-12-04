@@ -6,14 +6,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.Scanner;
-
+/**
+ * 
+ * @author Vicente Rojas
+ * @author Claudio Cortes
+ *
+ */
 public class App {
 
 	private static Scanner s;
-
+	/**
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 		UniversitySystem sistema = new UniversitySystemImpl();
 		Lectura(sistema);
+		s = new Scanner(System.in);
 		boolean cerrar = false;
 		while (cerrar == false) {
 			System.out.println("Ingrese su correo: ");
@@ -84,17 +94,29 @@ public class App {
 		generarEgresados(sistema);
 		guardarEstudiantes(sistema);
 	}
-
+	/**
+	 * this function saves the graduated students in a text file
+	 * @param sistema
+	 * @throws IOException
+	 */
 	private static void generarEgresados(UniversitySystem sistema) throws IOException {
 		FileWriter file = new FileWriter("egresados.txt");
 		sistema.guardarEstudiantesEgresados(file);
 	}
-
+	/**
+	 * this function saves student data to a text file
+	 * @param sistema
+	 * @throws IOException
+	 */
 	private static void guardarEstudiantes(UniversitySystem sistema) throws IOException {
 		FileWriter file = new FileWriter("estudiantes.txt");
 		sistema.guardarEstudiantes(file);
 	}
-
+	/**
+	 * this function opens the administrator menu in the closing period of the semester
+	 * @param sistema
+	 * @return
+	 */
 	private static boolean adminCierreSemestre(UniversitySystem sistema) {
 		System.out.println("Bienvenido administrador");
 		System.out.println("[1]	Cerrar semestre	[0]	Salir");
@@ -117,7 +139,11 @@ public class App {
 		}
 		return false;
 	}
-
+	/**
+	 * this function opens the end of semester menu for teachers
+	 * @param sistema
+	 * @param correo
+	 */
 	private static void profesorFinalSemestre(UniversitySystem sistema, String correo) {
 		System.out.println("Bienvenido al final de semestre profesor");
 		System.out.println("[1]	Ingresar notas	[0]	Salir");
@@ -138,7 +164,11 @@ public class App {
 			}
 		}
 	}
-
+	/**
+	 * this function allows you to enter the notes to a subject that a student is taking
+	 * @param sistema
+	 * @param correo
+	 */
 	private static void ingresarNotas(UniversitySystem sistema, String correo) {
 		int paralelo = verAlumnos(sistema, correo);
 		if (paralelo == -1) {
@@ -177,7 +207,11 @@ public class App {
 		sistema.actualizarNivel(rut);
 		System.out.println("Nota ingresada");
 	}
-
+	/**
+	 * this function verifies that the course grade is valid
+	 * @param nota
+	 * @return
+	 */
 	private static double escribirNota(String nota) {
 		double notad;
 		try {
@@ -188,7 +222,11 @@ public class App {
 		}
 		return notad;
 	}
-
+	/**
+	 * this function allows entering the mid-semester menu for students
+	 * @param sistema
+	 * @param correo
+	 */
 	private static void alumnoMitadSemestre(UniversitySystem sistema, String correo) {
 		System.out.println("Bienvenido a la mitad de semestre alumno");
 		System.out.println("[1]	Eliminar asignatura	[0]	Salir");
@@ -209,7 +247,11 @@ public class App {
 			}
 		}
 	}
-
+	/**
+	 * This function allows you to enter the semester start menu for teachers
+	 * @param sistema
+	 * @param correo
+	 */
 	private static void profesorInicioSemestre(UniversitySystem sistema, String correo) {
 		System.out.println("Bienvenido al comienzo de semestre profesor");
 		System.out.println("[1]	Chequear alumnos	[0]	Salir");
@@ -230,7 +272,12 @@ public class App {
 			}
 		}
 	}
-
+	/**
+	 * this function shows the students of each parallel dictated by a teacher
+	 * @param sistema
+	 * @param correo
+	 * @return
+	 */
 	private static int verAlumnos(UniversitySystem sistema, String correo) {
 		System.out.println("Lista de asignaturas");
 		sistema.desplegarParalelosProfesor(correo);
@@ -258,7 +305,12 @@ public class App {
 		}
 		return p - 1;
 	}
-
+	/**
+	 * this function shows the semester start menu that a student has
+	 * @param sistema
+	 * @param correo
+	 * @param rut
+	 */
 	private static void alumnoInicioSemestre(UniversitySystem sistema, String correo, String rut) {
 		System.out.println("Bienvenido al comienzo de semestre alumno");
 		System.out.println("[1]	Inscribir asignatura	[2]	Eliminar asignatura	[0]	Salir");
@@ -282,7 +334,12 @@ public class App {
 			}
 		}
 	}
-
+	/**
+	 * this feature allows students to enroll a course
+	 * @param sistema
+	 * @param correo
+	 * @param rut
+	 */
 	public static void inscribirAsignaturas(UniversitySystem sistema, String correo, String rut) {
 		sistema.desplegarAsignaturasInscribir(correo);
 		System.out.println("Ingrese el codigo del ramo que desea inscribir: ");
@@ -322,7 +379,11 @@ public class App {
 		}
 		System.out.println("Asignatura Inscrita");
 	}
-
+	/**
+	 * this feature allows students to delete an active course
+	 * @param sistema
+	 * @param correo
+	 */
 	private static void eliminarAsignatura(UniversitySystem sistema, String correo) {
 		System.out.println("Lista de Asignaturas inscritas");
 		if (sistema.desplegarAsignaturasInscritas(correo) == false) {
@@ -344,7 +405,11 @@ public class App {
 			System.out.println("Asignatura eliminada");
 		}
 	}
-
+	/**
+	 * this function reads the text files and enters them into the system
+	 * @param sistema
+	 * @throws FileNotFoundException
+	 */
 	public static void Lectura(UniversitySystem sistema) throws FileNotFoundException {
 		File file1 = new File("asignaturas.txt");
 		Scanner arch1 = new Scanner(file1);
@@ -427,17 +492,20 @@ public class App {
 		}
 		arch4.close();
 	}
-
+	/**
+	 * this function verifies that the date is entered correctly
+	 * @return
+	 */
 	@SuppressWarnings("deprecation")
 	public static int ingresarFecha() {
-		System.out.println("dia: ");
+		System.out.println("Dia: ");
 		String dia = s.nextLine();
-		System.out.println("mes: ");
+		System.out.println("Mes: ");
 		String mes = s.nextLine();
 		while (diaCorrecto((dia), (mes)) == false) {
-			System.out.println("dia: ");
+			System.out.println("Dia: ");
 			dia = s.nextLine();
-			System.out.println("mes: ");
+			System.out.println("Mes: ");
 			mes = s.nextLine();
 		}
 		int m = Integer.parseInt(mes);
@@ -471,7 +539,12 @@ public class App {
 			return 4;
 		}
 	}
-
+	/**
+	 * this function verifies that the days correspond to their corresponding months
+	 * @param d
+	 * @param m
+	 * @return
+	 */
 	public static boolean diaCorrecto(String d, String m) {
 		if (correctNumber(d) == false || correctNumber(m) == false) {
 			return false;
@@ -495,7 +568,11 @@ public class App {
 		}
 		return false;
 	}
-
+	/**
+	 * this function verifies that a String can be transformed into an int
+	 * @param numero
+	 * @return
+	 */
 	public static boolean correctNumber(String numero) {
 		String partes[] = numero.split("");
 		for (int i = 0; i < partes.length; i++) {
